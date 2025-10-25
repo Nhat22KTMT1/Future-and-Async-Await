@@ -7,7 +7,8 @@ class WeatherService {
     try {
       // Get coordinates
       final geoUrl = Uri.parse(
-          'https://geocoding-api.open-meteo.com/v1/search?name=$city&count=1');
+        'https://geocoding-api.open-meteo.com/v1/search?name=$city&count=1',
+      );
       final geoResponse = await http.get(geoUrl);
       final geoData = jsonDecode(geoResponse.body);
 
@@ -21,20 +22,38 @@ class WeatherService {
       final country = geoData['results'][0]['country'];
 
       // Calling API
+      final currentUrl = Uri.parse(
+        'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current_weather=true',
+      );
       final forecastUrl = Uri.parse(
-          'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&hourly=temperature_2m&current_weather=true&timezone=auto');
-      final response = await http.get(forecastUrl);
-      final data = jsonDecode(response.body);
+        'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&hourly=temperature_2m',
+      );
+
+      final currentRain = Uri.parse(
+        'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=rain',
+      );
+
+      final response = await Future.wait([
+        http.get(currentUrl),
+        http.get(forecastUrl),
+        http.get(currentRain),
+      ]);
+      final currentData = jsonDecode(response[0].body);
+      final data = jsonDecode(response[1].body);
+      final rainData = jsonDecode(response[2].body);
 
       // Parse data: hourly temperatures and times
       final times = List<String>.from(data['hourly']['time']);
       final temps = List<double>.from(
-          data['hourly']['temperature_2m'].map((t) => t.toDouble()));
+        data['hourly']['temperature_2m'].map((t) => t.toDouble()),
+      );
 
       final now = DateTime.now();
-      int index = times.indexWhere((t) =>
-          DateTime.parse(t).isAfter(now) ||
-          DateTime.parse(t).isAtSameMomentAs(now));
+      int index = times.indexWhere(
+        (t) =>
+            DateTime.parse(t).isAfter(now) ||
+            DateTime.parse(t).isAtSameMomentAs(now),
+      );
 
       if (index == -1) index = 0;
       final next12Temps = temps.skip(index).take(12).toList();
@@ -44,8 +63,9 @@ class WeatherService {
       return WeatherData(
         city: name,
         country: country,
-        temperature: data['current_weather']['temperature'].toDouble(),
-        windSpeed: data['current_weather']['windspeed'].toDouble(),
+        temperature: currentData['current_weather']['temperature'].toDouble(),
+        windSpeed: currentData['current_weather']['windspeed'].toDouble(),
+        rainfall: rainData['current']['rain'].toDouble(),
         hourlyTemperatures: next12Temps,
         hourlyTimes: next12Times,
       );
