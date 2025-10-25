@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
@@ -70,7 +71,15 @@ class WeatherService {
         hourlyTimes: next12Times,
       );
     } catch (e) {
-      throw Exception("Lỗi khi tải dữ liệu: $e");
+      if (e is SocketException) {
+        throw Exception(
+          "Không thể kết nối máy chủ. Vui lòng kiểm tra kết nối mạng.",
+        );
+      } else if (e is http.ClientException) {
+        throw Exception("Không thể kết nối máy chủ. Vui lòng thử lại sau.");
+      } else {
+        throw Exception("Lỗi khi tải dữ liệu: $e");
+      }
     }
   }
 }
