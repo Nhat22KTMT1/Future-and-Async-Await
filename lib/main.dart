@@ -92,7 +92,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Open-Meteo Weather ☁️",
+          "Thời tiết hôm nay ☁️",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
