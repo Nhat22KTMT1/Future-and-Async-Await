@@ -76,8 +76,15 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
                     // Nếu có lỗi
                     if (snapshot.hasError) {
+                      String errorMessage = snapshot.error.toString();
+                      if (errorMessage.contains("Exception: ")) {
+                        errorMessage = errorMessage.replaceFirst(
+                          "Exception: ",
+                          "",
+                        );
+                      }
                       return Text(
-                        "Lỗi: ${snapshot.error}",
+                        errorMessage,
                         style: const TextStyle(color: Colors.red),
                       );
                     }
