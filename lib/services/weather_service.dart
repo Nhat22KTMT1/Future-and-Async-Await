@@ -6,7 +6,6 @@ import '../models/weather_model.dart';
 class WeatherService {
   static Future<WeatherData> fetchWeather(String city) async {
     try {
-      // Get coordinates
       final geoUrl = Uri.parse(
         'https://geocoding-api.open-meteo.com/v1/search?name=$city&count=1',
       );
