@@ -21,10 +21,10 @@ class WeatherService {
       final name = geoData['results'][0]['name'];
       final country = geoData['results'][0]['country'];
       
-      final currentUrl = Uri.parse(
+      final currentWeather = Uri.parse(
         'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current_weather=true',
       );
-      final forecastUrl = Uri.parse(
+      final temp12hour = Uri.parse(
         'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&hourly=temperature_2m',
       );
 
@@ -33,8 +33,8 @@ class WeatherService {
       );
 
       final response = await Future.wait([
-        http.get(currentUrl),
-        http.get(forecastUrl),
+        http.get(currentWeather),
+        http.get(temp12hour),
         http.get(currentRain),
       ]);
       final currentData = jsonDecode(response[0].body);
