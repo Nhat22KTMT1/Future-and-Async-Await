@@ -68,16 +68,14 @@ class WeatherService {
         hourlyTemperatures: next12Temps,
         hourlyTimes: next12Times,
       );
+    } on SocketException {
+      throw Exception("Không thể kết nối Internet. Vui lòng kiểm tra mạng.");
+    } on http.ClientException {
+      throw Exception("Không thể kết nối tới máy chủ. Vui lòng thử lại sau.");
+    } on FormatException catch (e) {
+      throw Exception("Dữ liệu nhận được không hợp lệ: $e");
     } catch (e) {
-      if (e is SocketException) {
-        throw Exception(
-          "Không thể kết nối máy chủ. Vui lòng kiểm tra kết nối mạng.",
-        );
-      } else if (e is http.ClientException) {
-        throw Exception("Không thể kết nối máy chủ. Vui lòng thử lại sau.");
-      } else {
-        throw Exception("Lỗi khi tải dữ liệu: $e");
-      }
+      throw Exception("Lỗi khi tải dữ liệu: $e");
     }
   }
 }
