@@ -21,8 +21,7 @@ class WeatherService {
       final lon = geoData['results'][0]['longitude'];
       final name = geoData['results'][0]['name'];
       final country = geoData['results'][0]['country'];
-
-      // Calling API
+      
       final currentUrl = Uri.parse(
         'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current_weather=true',
       );
