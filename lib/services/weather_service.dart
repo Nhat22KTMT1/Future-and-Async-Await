@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
 
@@ -20,7 +21,7 @@ class WeatherService {
       final lon = geoData['results'][0]['longitude'];
       final name = geoData['results'][0]['name'];
       final country = geoData['results'][0]['country'];
-      
+
       final currentWeather = Uri.parse(
         'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current_weather=true',
       );
@@ -33,9 +34,9 @@ class WeatherService {
       );
 
       final response = await Future.wait([
-        http.get(currentWeather),
-        http.get(temp12hour),
-        http.get(currentRain),
+        http.get(currentWeather).timeout(const Duration(seconds: 60)),
+        http.get(temp12hour).timeout(const Duration(seconds: 60)),
+        http.get(currentRain).timeout(const Duration(seconds: 60)),
       ]).timeout(Duration(seconds: 20));
       final currentData = jsonDecode(response[0].body);
       final data = jsonDecode(response[1].body);
@@ -57,7 +58,7 @@ class WeatherService {
       if (index == -1) index = 0;
       final next12Temps = temps.skip(index).take(12).toList();
       final next12Times = times.skip(index).take(12).toList();
-      
+
       return WeatherData(
         city: name,
         country: country,
