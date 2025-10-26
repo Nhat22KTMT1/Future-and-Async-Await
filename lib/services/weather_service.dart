@@ -71,6 +71,8 @@ class WeatherService {
       throw Exception("Không thể kết nối Internet. Vui lòng kiểm tra mạng.");
     } on http.ClientException {
       throw Exception("Không thể kết nối tới máy chủ. Vui lòng thử lại sau.");
+    } on TimeoutException {
+      throw Exception("Yêu cầu mất quá nhiều thời gian. Vui lòng thử lại sau.");
     } on FormatException catch (e) {
       throw Exception("Dữ liệu nhận được không hợp lệ: $e");
     } catch (e) {
