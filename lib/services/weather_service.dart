@@ -34,10 +34,10 @@ class WeatherService {
       );
 
       final response = await Future.wait([
-        http.get(currentWeather).timeout(const Duration(seconds: 60)),
-        http.get(temp12hour).timeout(const Duration(seconds: 60)),
-        http.get(currentRain).timeout(const Duration(seconds: 60)),
-      ]).timeout(Duration(seconds: 20));
+        http.get(currentWeather),
+        http.get(temp12hour),
+        http.get(currentRain),
+      ]).timeout(Duration(seconds: 60));
       final currentData = jsonDecode(response[0].body);
       final data = jsonDecode(response[1].body);
       final rainData = jsonDecode(response[2].body);
