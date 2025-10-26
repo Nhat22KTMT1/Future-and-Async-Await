@@ -36,7 +36,7 @@ class WeatherService {
         http.get(currentWeather),
         http.get(temp12hour),
         http.get(currentRain),
-      ]);
+      ]).timeout(Duration(seconds: 20));
       final currentData = jsonDecode(response[0].body);
       final data = jsonDecode(response[1].body);
       final rainData = jsonDecode(response[2].body);
