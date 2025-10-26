@@ -57,8 +57,7 @@ class WeatherService {
       if (index == -1) index = 0;
       final next12Temps = temps.skip(index).take(12).toList();
       final next12Times = times.skip(index).take(12).toList();
-
-      // Return WeatherData
+      
       return WeatherData(
         city: name,
         country: country,
