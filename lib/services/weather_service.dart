@@ -11,6 +11,9 @@ class WeatherService {
         'https://geocoding-api.open-meteo.com/v1/search?name=$city&count=1',
       );
       final geoResponse = await http.get(geoUrl);
+      if (geoResponse.statusCode != 200) {
+        throw Exception("Lỗi khi lấy tọa độ: ${geoResponse.statusCode}");
+      }
       final geoData = jsonDecode(geoResponse.body);
 
       if (geoData['results'] == null || geoData['results'].isEmpty) {
