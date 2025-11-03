@@ -14,6 +14,7 @@ class WeatherService {
       if (geoResponse.statusCode != 200) {
         throw Exception("Lỗi khi lấy tọa độ: ${geoResponse.statusCode}");
       }
+      // Giải mã phản hồi JSON và chuyển thành 1 Map với key "results" và values là một List<Map>
       final geoData = jsonDecode(geoResponse.body);
 
       if (geoData['results'] == null || geoData['results'].isEmpty) {
@@ -33,7 +34,7 @@ class WeatherService {
       );
 
       final currentRain = Uri.parse(
-        'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=rain',
+        'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=precipitation',
       );
 
       final response = await Future.wait([
@@ -67,7 +68,7 @@ class WeatherService {
         country: country,
         temperature: currentData['current_weather']['temperature'].toDouble(),
         windSpeed: currentData['current_weather']['windspeed'].toDouble(),
-        rainfall: rainData['current']['rain'].toDouble(),
+        rainfall: rainData['current']['precipitation'].toDouble(),
         hourlyTemperatures: next12Temps,
         hourlyTimes: next12Times,
       );

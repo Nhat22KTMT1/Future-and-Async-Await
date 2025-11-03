@@ -110,7 +110,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "${weather.city}, ${weather.country}",
+                                  "${weather.city} - ${weather.country}",
                                   style: const TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
@@ -119,7 +119,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                 const SizedBox(height: 10),
                                 Text(
                                   "🌡️${weather.temperature}°C",
-                                  style: const TextStyle(fontSize: 28),
+                                  style: const TextStyle(fontSize: 25),
                                 ),
                                 Text("💨 Gió: ${weather.windSpeed} km/h"),
                                 Text("🌧️ Mưa: ${weather.rainfall} mm"),
