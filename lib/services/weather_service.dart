@@ -42,6 +42,13 @@ class WeatherService {
         http.get(temp12hour),
         http.get(currentRain),
       ]).timeout(Duration(seconds: 60));
+
+      for (var res in response) {
+        if (res.statusCode != 200) {
+          throw Exception("Lỗi khi lấy dữ liệu thời tiết: ${res.statusCode}");
+        }
+      }
+
       final currentData = jsonDecode(response[0].body);
       final data = jsonDecode(response[1].body);
       final rainData = jsonDecode(response[2].body);
@@ -52,14 +59,19 @@ class WeatherService {
         data['hourly']['temperature_2m'].map((t) => t.toDouble()),
       );
 
-      final now = DateTime.now();
+      if (times.length != temps.length) throw Exception('Data length mismatch');
+
+      final now = DateTime.now().toUtc();
       int index = times.indexWhere(
         (t) =>
-            DateTime.parse(t).isAfter(now) ||
-            DateTime.parse(t).isAtSameMomentAs(now),
-      );
+            DateTime.parse(t).toUtc().isAfter(now) ||
+            DateTime.parse(t).toUtc().isAtSameMomentAs(now),
+      ); // Find the index of the current time or the next hour
 
+      // If no future time found -> return -1 so start from beginning
       if (index == -1) index = 0;
+
+      // Skip index values to get next 12 hours/temperatures
       final next12Temps = temps.skip(index).take(12).toList();
       final next12Times = times.skip(index).take(12).toList();
 
